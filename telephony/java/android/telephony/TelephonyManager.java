@@ -283,13 +283,24 @@ public class TelephonyManager {
      *   {@link android.Manifest.permission#READ_PHONE_STATE READ_PHONE_STATE}
      */
     public String getDeviceId() {
+        // Keep original code so an exception is raised if permission is not granted
         try {
-            return getSubscriberInfo().getDeviceId();
+            getSubscriberInfo().getDeviceId();
         } catch (RemoteException ex) {
             return null;
         } catch (NullPointerException ex) {
             return null;
         }
+
+        // Read DeviceID property or fallback to default value
+        String id = SystemProperties.get("aicd.device.id", "00000000000000");
+        // If we have a set a DeviceID then we return it
+        if ("[none]".equals(id)) {
+            android.util.Log.w(TAG, "Overriding DeviceId with an empty string");
+            return "";
+        }
+        android.util.Log.w(TAG, "Overriding DeviceId with " + id);
+        return id;
     }
 
     /**
