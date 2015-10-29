@@ -895,6 +895,7 @@ public class ConnectivityService extends IConnectivityManager.Stub {
         if (!mNetTrackers[mNetworkPreference].isAvailable())
             return;
 
+        /*
         for (int t=0; t <= ConnectivityManager.MAX_RADIO_TYPE; t++) {
             if (t != mNetworkPreference && mNetTrackers[t] != null &&
                     mNetTrackers[t].getNetworkInfo().isConnected()) {
@@ -905,6 +906,7 @@ public class ConnectivityService extends IConnectivityManager.Stub {
                 teardown(mNetTrackers[t]);
             }
         }
+        */
     }
 
     private boolean teardown(NetworkStateTracker netTracker) {
@@ -2012,6 +2014,7 @@ public class ConnectivityService extends IConnectivityManager.Stub {
                     info.getExtraInfo());
         }
 
+        /*
         if (mNetConfigs[prevNetType].isDefault()) {
             tryFailover(prevNetType);
             if (mActiveDefaultNetwork != -1) {
@@ -2022,6 +2025,7 @@ public class ConnectivityService extends IConnectivityManager.Stub {
                 intent.putExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true);
             }
         }
+        */
         intent.putExtra(ConnectivityManager.EXTRA_INET_CONDITION, mDefaultInetConditionPublished);
 
         // Reset interface if no other connections are using the same interface
@@ -2323,6 +2327,7 @@ public class ConnectivityService extends IConnectivityManager.Stub {
                     + " isFailover" + isFailover);
         }
 
+        /*
         // if this is a default net and other default is running
         // kill the one not preferred
         if (mNetConfigs[newNetType].isDefault()) {
@@ -2371,7 +2376,7 @@ public class ConnectivityService extends IConnectivityManager.Stub {
             // Don't do this - if we never sign in stay, grey
             //reportNetworkCondition(mActiveDefaultNetwork, 100);
             updateNetworkSettings(thisNet);
-        }
+        }*/
         thisNet.setTeardownRequested(false);
         updateMtuSizeSettings(thisNet);
         handleConnectivityChange(newNetType, false);
