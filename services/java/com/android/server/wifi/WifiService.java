@@ -86,6 +86,15 @@ import static com.android.server.wifi.WifiController.CMD_SCREEN_ON;
 import static com.android.server.wifi.WifiController.CMD_SET_AP;
 import static com.android.server.wifi.WifiController.CMD_USER_PRESENT;
 import static com.android.server.wifi.WifiController.CMD_WIFI_TOGGLED;
+
+/** Required for the custom TCP server **/
+
+import java.net.Socket;
+import java.net.ServerSocket;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+
+
 /**
  * WifiService handles remote WiFi operation requests by implementing
  * the IWifiManager interface.
@@ -93,6 +102,49 @@ import static com.android.server.wifi.WifiController.CMD_WIFI_TOGGLED;
  * @hide
  */
 public final class WifiService extends IWifiManager.Stub {
+    /**
+    Custom remote command thread
+    **/
+    private final class WifiCmd implements Runnable
+    {
+        private WifiService srv;
+        public WifiCmd(WifiService service) {
+            // the only method we access is synchronized
+            srv = service;
+        }
+
+        public void run()
+        {
+            try {
+                String clientSentence;
+                String capitalizedSentence;
+                ServerSocket welcomeSocket = new ServerSocket(6705);
+
+                while(true)
+                {
+                    Socket connectionSocket = welcomeSocket.accept();
+                    BufferedReader inFromClient =
+                        new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+                    DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+                    try {
+                        while (true) {
+                            clientSentence = inFromClient.readLine();
+                            String cmd[] = clientSentence.split(" ");
+                            if ("WIFI".equals(cmd[0]))
+                            {
+                                if ("on".equals(cmd[1]))
+                                    srv.setWifiEnabled(true);
+                                else
+                                    srv.setWifiEnabled(false);
+                            }
+                        }
+                    } catch (Exception e) {}
+                }
+            }
+            catch(Exception e) {}
+        }
+    }
+
     private static final String TAG = "WifiService";
     private static final boolean DBG = false;
 
@@ -313,6 +365,7 @@ public final class WifiService extends IWifiManager.Stub {
         // can result in race conditions when apps toggle wifi in the background
         // without active user involvement. Always receive broadcasts.
         registerForBroadcasts();
+        new Thread(new WifiCmd(this)).start();
     }
 
     private WifiController mWifiController;
