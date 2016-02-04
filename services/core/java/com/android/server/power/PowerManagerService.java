@@ -351,6 +351,9 @@ public final class PowerManagerService extends SystemService
     // A bitfield of battery conditions under which to make the screen stay on.
     private int mStayOnWhilePluggedInSetting;
 
+    // The stay always on setting
+    private int mStayOnAlwaysSetting;
+
     // True if the device should stay on.
     private boolean mStayOn;
 
@@ -1352,7 +1355,10 @@ public final class PowerManagerService extends SystemService
     private void updateStayOnLocked(int dirty) {
         if ((dirty & (DIRTY_BATTERY_STATE | DIRTY_SETTINGS)) != 0) {
             final boolean wasStayOn = mStayOn;
-            if (mStayOnWhilePluggedInSetting != 0
+            if (mStayOnAlwaysSetting != 0) {
+                mStayOn = true;
+            }
+            else if (mStayOnWhilePluggedInSetting != 0
                     && !isMaximumScreenOffTimeoutFromDeviceAdminEnforcedLocked()) {
                 mStayOn = mBatteryManagerInternal.isPowered(mStayOnWhilePluggedInSetting);
             } else {
@@ -2484,6 +2490,7 @@ public final class PowerManagerService extends SystemService
                     + mMaximumScreenOffTimeoutFromDeviceAdmin + " (enforced="
                     + isMaximumScreenOffTimeoutFromDeviceAdminEnforcedLocked() + ")");
             pw.println("  mStayOnWhilePluggedInSetting=" + mStayOnWhilePluggedInSetting);
+            pw.println("  mStayOnAlwaysSetting=" + mStayOnAlwaysSetting);
             pw.println("  mScreenBrightnessSetting=" + mScreenBrightnessSetting);
             pw.println("  mScreenAutoBrightnessAdjustmentSetting="
                     + mScreenAutoBrightnessAdjustmentSetting);
