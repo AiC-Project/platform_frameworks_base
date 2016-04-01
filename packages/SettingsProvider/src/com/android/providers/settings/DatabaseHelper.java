@@ -2305,11 +2305,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             loadBooleanSetting(stmt, Settings.System.DIM_SCREEN,
                     R.bool.def_dim_screen);
-            loadSetting(stmt, Settings.System.STAY_ON_WHILE_PLUGGED_IN,
-                    ("1".equals(SystemProperties.get("ro.kernel.qemu")) ||
-                        mContext.getResources().getBoolean(R.bool.def_stay_on_while_plugged_in))
-                     ? 1 : 0);
-	    loadSetting(stmt, Settings.System.STAY_ON_ALWAYS, 1 );
+            loadSetting(stmt, Settings.System.STAY_ON_WHILE_PLUGGED_IN, 1);
+            loadSetting(stmt, Settings.System.STAY_ON_ALWAYS, 1 );
             loadIntegerSetting(stmt, Settings.System.SCREEN_OFF_TIMEOUT,
                     R.integer.def_screen_off_timeout);
 
@@ -2514,10 +2511,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             loadBooleanSetting(stmt, Settings.Global.AUTO_TIME_ZONE,
                     R.bool.def_auto_time_zone); // Sync timezone to NITZ
 
-            loadSetting(stmt, Settings.Global.STAY_ON_WHILE_PLUGGED_IN,
-                    ("1".equals(SystemProperties.get("ro.kernel.qemu")) ||
-                        mContext.getResources().getBoolean(R.bool.def_stay_on_while_plugged_in))
-                     ? 1 : 0);
+            loadSetting(stmt, Settings.Global.STAY_ON_WHILE_PLUGGED_IN, 1);
+            loadSetting(stmt, Settings.Global.STAY_ON_ALWAYS, 1);
 
             loadIntegerSetting(stmt, Settings.Global.WIFI_SLEEP_POLICY,
                     R.integer.def_wifi_sleep_policy);

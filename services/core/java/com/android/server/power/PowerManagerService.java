@@ -352,7 +352,7 @@ public final class PowerManagerService extends SystemService
     private int mStayOnWhilePluggedInSetting;
 
     // The stay always on setting
-    private int mStayOnAlwaysSetting;
+    private int mStayOnAlwaysSetting = 1;
 
     // True if the device should stay on.
     private boolean mStayOn;
@@ -1065,7 +1065,9 @@ public final class PowerManagerService extends SystemService
                 || !mBootCompleted || !mSystemReady) {
             return false;
         }
+        return false;
 
+        /*
         Trace.traceBegin(Trace.TRACE_TAG_POWER, "goToSleep");
         try {
             switch (reason) {
@@ -1118,6 +1120,7 @@ public final class PowerManagerService extends SystemService
             Trace.traceEnd(Trace.TRACE_TAG_POWER);
         }
         return true;
+        */
     }
 
     private void napInternal(long eventTime, int uid) {
@@ -1908,6 +1911,8 @@ public final class PowerManagerService extends SystemService
     }
 
     private int getDesiredScreenPolicyLocked() {
+        return DisplayPowerRequest.POLICY_BRIGHT;
+        /*
         if (mWakefulness == WAKEFULNESS_ASLEEP) {
             return DisplayPowerRequest.POLICY_OFF;
         }
@@ -1931,6 +1936,7 @@ public final class PowerManagerService extends SystemService
         }
 
         return DisplayPowerRequest.POLICY_DIM;
+        */
     }
 
     private final DisplayManagerInternal.DisplayPowerCallbacks mDisplayPowerCallbacks =
